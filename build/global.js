@@ -125,51 +125,82 @@ module.exports = Application;
 var React = require('react');
 
 var CurrencyModal = React.createClass({
-	displayName: "CurrencyModal",
+	displayName: 'CurrencyModal',
 
 	getInitialState: function () {
-		return {};
+		return {
+			currencies: [{
+				code: "rub",
+				name: 'Рубль'
+			}, {
+				code: 'dollar',
+				name: 'Доллар'
+			}, {
+				code: 'euro',
+				name: 'Евро'
+			}]
+		};
+	},
+
+	addCurrency: function () {
+		console.log(this.refs.currencySelect.value);
 	},
 
 	render: function () {
+		var currencies = this.state.currencies;
+
 		return React.createElement(
-			"div",
+			'div',
 			null,
 			React.createElement(
-				"div",
-				{ className: "modal fade", id: "myModal", tabindex: "-1", role: "dialog", "aria-labelledby": "myModalLabel" },
+				'div',
+				{ className: 'modal fade', id: 'myModal', role: 'dialog', 'aria-labelledby': 'myModalLabel' },
 				React.createElement(
-					"div",
-					{ className: "modal-dialog", role: "document" },
+					'div',
+					{ className: 'modal-dialog', role: 'document' },
 					React.createElement(
-						"div",
-						{ className: "modal-content" },
+						'div',
+						{ className: 'modal-content' },
 						React.createElement(
-							"div",
-							{ className: "modal-header" },
+							'div',
+							{ className: 'modal-header' },
 							React.createElement(
-								"button",
-								{ type: "button", className: "close", "data-dismiss": "modal", "aria-label": "Close" },
+								'button',
+								{ type: 'button', className: 'close', 'data-dismiss': 'modal', 'aria-label': 'Close' },
 								React.createElement(
-									"span",
-									{ "aria-hidden": "true" },
-									"×"
+									'span',
+									{ 'aria-hidden': 'true' },
+									'×'
 								)
 							),
 							React.createElement(
-								"h4",
-								{ className: "modal-title", id: "myModalLabel" },
-								"Добавить валюту"
+								'h4',
+								{ className: 'modal-title', id: 'myModalLabel' },
+								'Добавить валюту'
 							)
 						),
-						React.createElement("div", { className: "modal-body" }),
 						React.createElement(
-							"div",
-							{ className: "modal-footer" },
+							'div',
+							{ className: 'modal-body' },
 							React.createElement(
-								"button",
-								{ type: "button", className: "btn btn-primary" },
-								"Добавить"
+								'select',
+								{ className: 'selectpicker', ref: 'currencySelect' },
+								currencies.map(function (currency, key) {
+									return React.createElement(
+										'option',
+										{ value: currency.code, key: key },
+										currency.name
+									);
+								})
+							)
+						),
+						React.createElement(
+							'div',
+							{ className: 'modal-footer' },
+							React.createElement(
+								'button',
+								{ type: 'button', className: 'btn btn-primary', onClick: this.addCurrency },
+								'Добавить'
 							)
 						)
 					)
@@ -184,16 +215,10 @@ module.exports = CurrencyModal;
 },{"react":163}],5:[function(require,module,exports){
 var React = require('react');
 var $ = require('jquery');
-// var CurrencyModal = require('./currencyModal.jsx');
 
 var NewComponent = React.createClass({
 	displayName: 'NewComponent',
 
-	addCurrency: function () {
-		$('.modal-trigger').modal({
-			show: 'true'
-		});
-	},
 	render: function () {
 		return React.createElement(
 			'div',
@@ -207,29 +232,33 @@ var NewComponent = React.createClass({
 				'table',
 				null,
 				React.createElement(
-					'tr',
+					'tbody',
 					null,
 					React.createElement(
-						'td',
+						'tr',
 						null,
-						'Сбережения'
-					),
-					React.createElement(
-						'td',
-						null,
-						'В моей валюте, ',
-						React.createElement('i', { className: 'fa fa-rub' })
-					),
-					React.createElement(
-						'td',
-						null,
-						'Ставки вкладов'
+						React.createElement(
+							'td',
+							null,
+							'Сбережения'
+						),
+						React.createElement(
+							'td',
+							null,
+							'В моей валюте, ',
+							React.createElement('i', { className: 'fa fa-rub' })
+						),
+						React.createElement(
+							'td',
+							null,
+							'Ставки вкладов'
+						)
 					)
 				)
 			),
 			React.createElement(
 				'a',
-				{ className: 'btn btn-primary btn-sm modal-trigger', href: '#', onClick: this.addCurrency, 'data-toggle': 'modal', 'data-target': '#myModal' },
+				{ className: 'btn btn-primary btn-sm modal-trigger', href: '#', 'data-toggle': 'modal', 'data-target': '#myModal' },
 				React.createElement('i', { className: 'fa fa-plus' }),
 				' Валюта'
 			)
