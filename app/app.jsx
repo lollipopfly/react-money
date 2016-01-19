@@ -1,13 +1,13 @@
 var React        = require('react');
 var ReactDOM     = require('react-dom');
-var NewComponent = require('./components/newcomponent.jsx');
+var Application = require('./components/application.jsx');
 
 
 /*------------------------------------*\
     Init
 \*------------------------------------*/
 ReactDOM.render(
-	<NewComponent />,
+	<Application />,
 	document.getElementById('content')
 );
 
