@@ -92,18 +92,13 @@ process.chdir = function (dir) {
 process.umask = function() { return 0; };
 
 },{}],2:[function(require,module,exports){
-// var MainComponent = require('./components/application.js');
-
 var React = require('react');
-var NewComponent = require('./components/newcomponent.jsx');
 var ReactDOM = require('react-dom');
-
-// React.render(React.createElement(MainComponent), document.getElementById('content'));
+var NewComponent = require('./components/newcomponent.jsx');
 
 /*------------------------------------*\
     Init
 \*------------------------------------*/
-
 ReactDOM.render(React.createElement(NewComponent, null), document.getElementById('content'));
 
 },{"./components/newcomponent.jsx":3,"react":160,"react-dom":4}],3:[function(require,module,exports){
