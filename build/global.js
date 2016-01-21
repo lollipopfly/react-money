@@ -124,83 +124,127 @@ module.exports = Application;
 },{"./currencyModal.jsx":4,"./form.jsx":5,"react":163}],4:[function(require,module,exports){
 var React = require('react');
 
+if (typeof Storage !== "undefined") {
+	var currencies = localStorage.getItem("currencies");
+	if (currencies) {
+		currencies = JSON.parse(currencies);
+	}
+}
+
 var CurrencyModal = React.createClass({
-	displayName: 'CurrencyModal',
+	displayName: "CurrencyModal",
 
 	getInitialState: function () {
 		return {
+			storageCurrency: currencies,
 			currencies: [{
 				code: "rub",
-				name: 'Рубль'
+				name: 'Рубль',
+				className: 'fa-rub'
 			}, {
 				code: 'dollar',
-				name: 'Доллар'
+				name: 'Доллар',
+				className: 'fa-usd'
 			}, {
 				code: 'euro',
-				name: 'Евро'
+				name: 'Евро',
+				className: 'fa-eur'
 			}]
 		};
 	},
 
 	addCurrency: function () {
-		console.log(this.refs.currencySelect.value);
+		if (typeof Storage !== "undefined") {
+			var currenciesFromStorage = JSON.parse(this.getCurrency()); // get currencies string from localstorage
+			var currencySelectObj = JSON.parse(this.refs.currencySelect.value); // selected currency & make obj
+
+			if (currenciesFromStorage) {
+				// Chek the condition if selected currency is entry in localstorage
+				for (var i = 0; i < currenciesFromStorage.length; i++) {
+					if (currenciesFromStorage[i].name === currencySelectObj.name) {
+						alert('Такая валюта уже есть!');
+						return false;
+					}
+				}
+			} else {
+				//  if localstorage is empty
+				var currenciesFromStorage = Array();
+			}
+
+			// Add currency
+			currenciesFromStorage.push(currencySelectObj);
+			currenciesFromStorage = JSON.stringify(currenciesFromStorage);
+			localStorage.setItem('currencies', currenciesFromStorage); // set currencies string to localstorage
+		} else {
+				console.log('Sorry locastorage not working in this browser!');
+			}
+	},
+
+	getCurrency: function () {
+		if (typeof Storage !== "undefined") {
+			var currencies = localStorage.getItem('currencies');
+			return currencies;
+		} else {
+			console.log('Sorry locastorage not working in this browser!');
+		}
 	},
 
 	render: function () {
 		var currencies = this.state.currencies;
-
 		return React.createElement(
-			'div',
+			"div",
 			null,
 			React.createElement(
-				'div',
-				{ className: 'modal fade', id: 'myModal', role: 'dialog', 'aria-labelledby': 'myModalLabel' },
+				"div",
+				{ className: "modal fade", id: "myModal", role: "dialog", "aria-labelledby": "myModalLabel" },
 				React.createElement(
-					'div',
-					{ className: 'modal-dialog', role: 'document' },
+					"div",
+					{ className: "modal-dialog", role: "document" },
 					React.createElement(
-						'div',
-						{ className: 'modal-content' },
+						"div",
+						{ className: "modal-content" },
 						React.createElement(
-							'div',
-							{ className: 'modal-header' },
+							"div",
+							{ className: "modal-header" },
 							React.createElement(
-								'button',
-								{ type: 'button', className: 'close', 'data-dismiss': 'modal', 'aria-label': 'Close' },
+								"button",
+								{ type: "button", className: "close", "data-dismiss": "modal", "aria-label": "Close" },
 								React.createElement(
-									'span',
-									{ 'aria-hidden': 'true' },
-									'×'
+									"span",
+									{ "aria-hidden": "true" },
+									"×"
 								)
 							),
 							React.createElement(
-								'h4',
-								{ className: 'modal-title', id: 'myModalLabel' },
-								'Добавить валюту'
+								"h4",
+								{ className: "modal-title", id: "myModalLabel" },
+								"Добавить валюту"
 							)
 						),
 						React.createElement(
-							'div',
-							{ className: 'modal-body' },
+							"div",
+							{ className: "modal-body" },
 							React.createElement(
-								'select',
-								{ className: 'selectpicker', ref: 'currencySelect' },
+								"select",
+								{ className: "selectpicker", ref: "currencySelect" },
 								currencies.map(function (currency, key) {
+									// Переводим массив в строку
+									var currencyData = JSON.stringify(currency);
 									return React.createElement(
-										'option',
-										{ value: currency.code, key: key },
+										"option",
+										{ value: currencyData, key: key },
 										currency.name
 									);
 								})
 							)
 						),
 						React.createElement(
-							'div',
-							{ className: 'modal-footer' },
+							"div",
+							{ className: "modal-footer" },
 							React.createElement(
-								'button',
-								{ type: 'button', className: 'btn btn-primary', onClick: this.addCurrency },
-								'Добавить'
+								"button",
+								{ type: "button", className: "btn btn-primary", onClick: this.addCurrency },
+								"Добавить"
 							)
 						)
 					)
