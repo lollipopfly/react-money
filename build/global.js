@@ -103,7 +103,6 @@ ReactDOM.render(React.createElement(Application, null), document.getElementById(
 
 },{"./components/application.jsx":3,"react":163,"react-dom":7}],3:[function(require,module,exports){
 var React = require('react');
-var FormComponent = require('./form.jsx');
 var CurrencyModal = require('./currencyModal.jsx');
 
 var Application = React.createClass({
@@ -113,7 +112,6 @@ var Application = React.createClass({
 		return React.createElement(
 			'div',
 			null,
-			React.createElement(FormComponent, null),
 			React.createElement(CurrencyModal, null)
 		);
 	}
@@ -121,22 +119,23 @@ var Application = React.createClass({
 
 module.exports = Application;
 
-},{"./currencyModal.jsx":4,"./form.jsx":5,"react":163}],4:[function(require,module,exports){
+},{"./currencyModal.jsx":4,"react":163}],4:[function(require,module,exports){
 var React = require('react');
+var FormComponent = require('./form.jsx'); // ?
 
 if (typeof Storage !== "undefined") {
-	var currencies = localStorage.getItem("currencies");
-	if (currencies) {
-		currencies = JSON.parse(currencies);
+	var storage = localStorage.getItem("currencies");
+	if (storage) {
+		storage = JSON.parse(storage);
 	}
 }
 
 var CurrencyModal = React.createClass({
-	displayName: "CurrencyModal",
+	displayName: 'CurrencyModal',
 
 	getInitialState: function () {
 		return {
-			storageCurrency: currencies,
+			storage: storage,
 			currencies: [{
 				code: "rub",
 				name: 'Рубль',
@@ -155,7 +154,7 @@ var CurrencyModal = React.createClass({
 
 	addCurrency: function () {
 		if (typeof Storage !== "undefined") {
-			var currenciesFromStorage = JSON.parse(this.getCurrency()); // get currencies string from localstorage
+			var currenciesFromStorage = this.state.storage; // get currencies string from localstorage
 			var currencySelectObj = JSON.parse(this.refs.currencySelect.value); // selected currency & make obj
 
 			if (currenciesFromStorage) {
@@ -167,71 +166,65 @@ var CurrencyModal = React.createClass({
 					}
 				}
 			} else {
-				//  if localstorage is empty
+				//  localstorage is empty
 				var currenciesFromStorage = Array();
 			}
 
 			// Add currency
 			currenciesFromStorage.push(currencySelectObj);
+			this.setState({ storage: currenciesFromStorage });
 			currenciesFromStorage = JSON.stringify(currenciesFromStorage);
 			localStorage.setItem('currencies', currenciesFromStorage); // set currencies string to localstorage
+			$('#myModal').modal('hide'); // close modal
 		} else {
 				console.log('Sorry locastorage not working in this browser!');
 			}
 	},
 
-	getCurrency: function () {
-		if (typeof Storage !== "undefined") {
-			var currencies = localStorage.getItem('currencies');
-			return currencies;
-		} else {
-			console.log('Sorry locastorage not working in this browser!');
-		}
-	},
-
 	render: function () {
 		var currencies = this.state.currencies;
+
 		return React.createElement(
-			"div",
+			'div',
 			null,
 			React.createElement(
-				"div",
-				{ className: "modal fade", id: "myModal", role: "dialog", "aria-labelledby": "myModalLabel" },
+				'div',
+				{ className: 'modal fade', id: 'myModal', role: 'dialog', 'aria-labelledby': 'myModalLabel' },
 				React.createElement(
-					"div",
-					{ className: "modal-dialog", role: "document" },
+					'div',
+					{ className: 'modal-dialog', role: 'document' },
 					React.createElement(
-						"div",
-						{ className: "modal-content" },
+						'div',
+						{ className: 'modal-content' },
 						React.createElement(
-							"div",
-							{ className: "modal-header" },
+							'div',
+							{ className: 'modal-header' },
 							React.createElement(
-								"button",
-								{ type: "button", className: "close", "data-dismiss": "modal", "aria-label": "Close" },
+								'button',
+								{ type: 'button', className: 'close', 'data-dismiss': 'modal', 'aria-label': 'Close' },
 								React.createElement(
-									"span",
-									{ "aria-hidden": "true" },
-									"×"
+									'span',
+									{ 'aria-hidden': 'true' },
+									'×'
 								)
 							),
 							React.createElement(
-								"h4",
-								{ className: "modal-title", id: "myModalLabel" },
-								"Добавить валюту"
+								'h4',
+								{ className: 'modal-title', id: 'myModalLabel' },
+								'Добавить валюту'
 							)
 						),
 						React.createElement(
-							"div",
-							{ className: "modal-body" },
+							'div',
+							{ className: 'modal-body' },
 							React.createElement(
-								"select",
-								{ className: "selectpicker", ref: "currencySelect" },
+								'select',
+								{ className: 'selectpicker', ref: 'currencySelect' },
 								currencies.map(function (currency, key) {
 									// Переводим массив в строку
 									var currencyData = JSON.stringify(currency);
 									return React.createElement(
-										"option",
+										'option',
 										{ value: currencyData, key: key },
 										currency.name
 									);
@@ -239,78 +232,159 @@ var CurrencyModal = React.createClass({
 							)
 						),
 						React.createElement(
-							"div",
-							{ className: "modal-footer" },
+							'div',
+							{ className: 'modal-footer' },
 							React.createElement(
-								"button",
-								{ type: "button", className: "btn btn-primary", onClick: this.addCurrency },
-								"Добавить"
+								'button',
+								{ type: 'button', className: 'btn btn-primary', onClick: this.addCurrency },
+								'Добавить'
 							)
 						)
 					)
 				)
-			)
+			),
+			React.createElement(FormComponent, { storage: this.state.storage })
 		);
 	}
 });
 
 module.exports = CurrencyModal;
 
-},{"react":163}],5:[function(require,module,exports){
+},{"./form.jsx":5,"react":163}],5:[function(require,module,exports){
 var React = require('react');
 var $ = require('jquery');
 
-var NewComponent = React.createClass({
-	displayName: 'NewComponent',
+var FormComponent = React.createClass({
+	displayName: 'FormComponent',
+
+	getCurrencyStorage: function () {
+		if (typeof Storage !== "undefined") {
+			var currencies = localStorage.getItem('currencies');
+
+			return currencies;
+		} else {
+			console.log('Sorry locastorage not working in this browser!');
+		}
+	},
 
 	render: function () {
-		return React.createElement(
-			'div',
-			{ className: 'col-md-7' },
-			React.createElement(
-				'h1',
-				null,
-				'Прогноз сбережений'
-			),
-			React.createElement(
-				'table',
-				null,
+		var storage = this.props.storage;
+
+		if (storage) {
+			return React.createElement(
+				'div',
+				{ className: 'col-md-7' },
 				React.createElement(
-					'tbody',
+					'h1',
+					null,
+					'Прогноз сбережений'
+				),
+				React.createElement(
+					'table',
 					null,
 					React.createElement(
-						'tr',
+						'tbody',
 						null,
 						React.createElement(
-							'td',
+							'tr',
 							null,
-							'Сбережения'
+							React.createElement(
+								'td',
+								null,
+								'Сбережения'
+							),
+							React.createElement(
+								'td',
+								null,
+								'В моей валюте, ',
+								React.createElement('i', { className: 'fa fa-rub' })
+							),
+							React.createElement(
+								'td',
+								null,
+								'Ставки вкладов'
+							)
 						),
+						storage.map(function (currency, key) {
+							return React.createElement(
+								'tr',
+								{ key: key },
+								React.createElement(
+									'td',
+									null,
+									React.createElement('i', { className: "fa form__icon " + currency.className }),
+									React.createElement('input', { type: 'text' })
+								),
+								React.createElement(
+									'td',
+									null,
+									'2123'
+								),
+								React.createElement(
+									'td',
+									null,
+									React.createElement('input', { type: 'text' })
+								)
+							);
+						})
+					)
+				),
+				React.createElement(
+					'a',
+					{ className: 'btn btn-primary btn-sm modal-trigger', href: '#', 'data-toggle': 'modal', 'data-target': '#myModal' },
+					React.createElement('i', { className: 'fa fa-plus' }),
+					' Валюта'
+				)
+			);
+		} else {
+			return React.createElement(
+				'div',
+				{ className: 'col-md-7' },
+				React.createElement(
+					'h1',
+					null,
+					'Прогноз сбережений'
+				),
+				React.createElement(
+					'table',
+					null,
+					React.createElement(
+						'tbody',
+						null,
 						React.createElement(
-							'td',
+							'tr',
 							null,
-							'В моей валюте, ',
-							React.createElement('i', { className: 'fa fa-rub' })
-						),
-						React.createElement(
-							'td',
-							null,
-							'Ставки вкладов'
+							React.createElement(
+								'td',
+								null,
+								'Сбережения'
+							),
+							React.createElement(
+								'td',
+								null,
+								'В моей валюте, ',
+								React.createElement('i', { className: 'fa fa-rub' })
+							),
+							React.createElement(
+								'td',
+								null,
+								'Ставки вкладов'
+							)
 						)
 					)
+				),
+				React.createElement(
+					'a',
+					{ className: 'btn btn-primary btn-sm modal-trigger', href: '#', 'data-toggle': 'modal', 'data-target': '#myModal' },
+					React.createElement('i', { className: 'fa fa-plus' }),
+					' Валюта'
 				)
-			),
-			React.createElement(
-				'a',
-				{ className: 'btn btn-primary btn-sm modal-trigger', href: '#', 'data-toggle': 'modal', 'data-target': '#myModal' },
-				React.createElement('i', { className: 'fa fa-plus' }),
-				' Валюта'
-			)
-		);
+			);
+		}
 	}
 });
 
-module.exports = NewComponent;
+module.exports = FormComponent;
 
 },{"jquery":6,"react":163}],6:[function(require,module,exports){
 /*!

@@ -1,3 +1,30 @@
 .main {
 	margin-top: 30px;
 }
+
+
+td {
+	padding: 5px;
+}
+
+/* FORM */
+.form__icon {
+	display: inline-block;
+	margin-right: 5px;
+	color: #fff;
+	padding: 2px;
+	font-size: 12px;
+	border-radius: 3px;
+}
+
+.form__icon.fa-rub {
+	background: #06C;
+}
+
+.form__icon.fa-usd {
+	background: #009832;
+}
+
+.form__icon.fa-eur {
+	background: #FF9800;
+}

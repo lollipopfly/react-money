@@ -1,9 +1,10 @@
 var React = require('react');
+var FormComponent = require('./form.jsx'); // ?
 
 if(typeof(Storage) !== "undefined") {
-	var currencies = localStorage.getItem("currencies");
-	if(currencies) {
-		currencies = JSON.parse(currencies);
+	var storage = localStorage.getItem("currencies");
+	if(storage) {
+		storage = JSON.parse(storage);
 	}
 }
 
@@ -11,7 +12,7 @@ if(typeof(Storage) !== "undefined") {
 var CurrencyModal = React.createClass({
 	getInitialState: function() {
 		return {
-			storageCurrency: currencies,
+			storage: storage,
 			currencies:[
 				{
 					code: "rub",
@@ -33,7 +34,7 @@ var CurrencyModal = React.createClass({
 
 	addCurrency: function() {
 		if(typeof(Storage) !== "undefined") {
-			var currenciesFromStorage = JSON.parse(this.getCurrency()); // get currencies string from localstorage
+			var currenciesFromStorage = this.state.storage; // get currencies string from localstorage
 			var currencySelectObj = JSON.parse(this.refs.currencySelect.value); // selected currency & make obj
 
 			if(currenciesFromStorage) {
@@ -45,23 +46,16 @@ var CurrencyModal = React.createClass({
 					}
 				}
 			} else {
-				//  if localstorage is empty
+				//  localstorage is empty
 				var currenciesFromStorage = Array();
 			}
 
 			// Add currency
 			currenciesFromStorage.push(currencySelectObj);
+			this.setState({storage: currenciesFromStorage});
 			currenciesFromStorage = JSON.stringify(currenciesFromStorage);
 			localStorage.setItem('currencies', currenciesFromStorage); // set currencies string to localstorage
-		} else {
-			console.log('Sorry locastorage not working in this browser!');
-		}
-	},
-
-	getCurrency: function() {
-		if(typeof(Storage) !== "undefined") {
-			var currencies = localStorage.getItem('currencies');
-			return currencies;
+			$('#myModal').modal('hide'); // close modal
 		} else {
 			console.log('Sorry locastorage not working in this browser!');
 		}
@@ -69,6 +63,7 @@ var CurrencyModal = React.createClass({
 
 	render: function() {
 		var currencies = this.state.currencies;
+
 		return (
 			<div>
 				<div className="modal fade" id="myModal" role="dialog" aria-labelledby="myModalLabel">
@@ -95,6 +90,9 @@ var CurrencyModal = React.createClass({
 						</div>
 					</div>
 				</div>
+
+				{/* Передаем в комаонет формы актуальный localstorage*/}
+				<FormComponent storage={this.state.storage}/>
 			</div>
 		);
 	}
