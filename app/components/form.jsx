@@ -1,7 +1,32 @@
-var React = require('react');
-var $     = require('jquery');
+var React         = require('react');
+var $             = require('jquery');
+var CurrencyModal = require('./currencyModal.jsx');
+
+
 
 var FormComponent = React.createClass({
+	getInitialState: function() {
+		return {
+			storage: this.getStorage(),
+		}
+	},
+
+	getStorage: function() {
+		// get info from Local Storage
+		if(typeof(Storage) !== "undefined") {
+			var storage = localStorage.getItem("currencies");
+			if(storage) {
+				storage = JSON.parse(storage) || [];
+				return storage;
+			}
+		}
+	},
+
+componentDidUpdate: function(prevProps, prevState) {
+    localStorage.state = JSON.stringify(this.state);
+
+},
+
 	getCurrencyStorage: function() {
 		if(typeof(Storage) !== "undefined") {
 			var currencies = localStorage.getItem('currencies');
@@ -13,8 +38,8 @@ var FormComponent = React.createClass({
 	},
 
 	render: function() {
-		var storage = this.props.storage;
-
+		var storage = this.state.storage;
+		console.log(storage);
 		if(storage) {
 			return (
 				<div className="col-md-7">
@@ -35,17 +60,20 @@ var FormComponent = React.createClass({
 												<input type="text"/>
 											</td>
 											<td>
-												2123
+												test number
 											</td>
 											<td>
 												<input type="text"/>
 											</td>
-										</tr>)
+										</tr>
+									)
 								})
 							}
 						</tbody>
 					</table>
 					<a className="btn btn-primary btn-sm modal-trigger" href="#" data-toggle="modal" data-target="#myModal"><i className="fa fa-plus"></i> Валюта</a>
+
+					<CurrencyModal storage={this.state.storage}/>
 				</div>
 			);
 		} else {
@@ -62,6 +90,7 @@ var FormComponent = React.createClass({
 						</tbody>
 					</table>
 					<a className="btn btn-primary btn-sm modal-trigger" href="#" data-toggle="modal" data-target="#myModal"><i className="fa fa-plus"></i> Валюта</a>
+				<CurrencyModal storage={this.state.storage}/>
 				</div>
 			)
 		}
