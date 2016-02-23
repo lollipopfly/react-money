@@ -50,13 +50,12 @@ var CurrencyModal = React.createClass({
 			localStorage.setItem('currencies', storage); // set currencies string to localstorage
 			$('#myModal').modal('hide'); // close modal
 		} else {
-			console.log('Sorry locastorage not working in this browser!');
+			console.log('Sorry LocalStorage not working in this browser!');
 		}
 	},
 
 	render: function() {
 		var currencies = this.state.currencies;
-
 		return (
 			<div>
 				<div className="modal fade" id="myModal" role="dialog" aria-labelledby="myModalLabel">
@@ -83,9 +82,6 @@ var CurrencyModal = React.createClass({
 						</div>
 					</div>
 				</div>
-
-				{/* Передаем в комаонет формы актуальный localstorage*/}
-				<FormComponent storage={this.state.storage}/>
 			</div>
 		);
 	}

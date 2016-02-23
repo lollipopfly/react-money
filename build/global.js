@@ -10,7 +10,8 @@ ReactDOM.render(React.createElement(Application, null), document.getElementById(
 
 },{"./components/application.jsx":2,"react":162,"react-dom":6}],2:[function(require,module,exports){
 var React = require('react');
-var CurrencyModal = require('./currencyModal.jsx');
+// var CurrencyModal = require('./currencyModal.jsx');
+var FormComponent = require('./form.jsx');
 
 if (typeof Storage !== "undefined") {
 	var storage = localStorage.getItem("currencies");
@@ -33,7 +34,7 @@ var Application = React.createClass({
 
 module.exports = Application;
 
-},{"./currencyModal.jsx":3,"react":162}],3:[function(require,module,exports){
+},{"./form.jsx":4,"react":162}],3:[function(require,module,exports){
 var React = require('react');
 var FormComponent = require('./form.jsx');
 
@@ -84,13 +85,12 @@ var CurrencyModal = React.createClass({
 			localStorage.setItem('currencies', storage); // set currencies string to localstorage
 			$('#myModal').modal('hide'); // close modal
 		} else {
-				console.log('Sorry locastorage not working in this browser!');
+				console.log('Sorry LocalStorage not working in this browser!');
 			}
 	},
 
 	render: function () {
 		var currencies = this.state.currencies;
-
 		return React.createElement(
 			'div',
 			null,
@@ -149,8 +149,7 @@ var CurrencyModal = React.createClass({
 						)
 					)
 				)
-			),
-			React.createElement(FormComponent, { storage: this.state.storage })
+			)
 		);
 	}
 });
@@ -160,9 +159,31 @@ module.exports = CurrencyModal;
 },{"./form.jsx":4,"react":162}],4:[function(require,module,exports){
 var React = require('react');
 var $ = require('jquery');
+var CurrencyModal = require('./currencyModal.jsx');
 
 var FormComponent = React.createClass({
 	displayName: 'FormComponent',
+
+	getInitialState: function () {
+		return {
+			storage: this.getStorage()
+		};
+	},
+
+	getStorage: function () {
+		// get info from Local Storage
+		if (typeof Storage !== "undefined") {
+			var storage = localStorage.getItem("currencies");
+			if (storage) {
+				storage = JSON.parse(storage) || [];
+				return storage;
+			}
+		}
+	},
+
+	componentDidUpdate: function (prevProps, prevState) {
+		localStorage.state = JSON.stringify(this.state);
+	},
 
 	getCurrencyStorage: function () {
 		if (typeof Storage !== "undefined") {
@@ -175,8 +196,8 @@ var FormComponent = React.createClass({
 	},
 
 	render: function () {
-		var storage = this.props.storage;
-
+		var storage = this.state.storage;
+		console.log(storage);
 		if (storage) {
 			return React.createElement(
 				'div',
@@ -241,7 +262,8 @@ var FormComponent = React.createClass({
 					{ className: 'btn btn-primary btn-sm modal-trigger', href: '#', 'data-toggle': 'modal', 'data-target': '#myModal' },
 					React.createElement('i', { className: 'fa fa-plus' }),
 					' Валюта'
-				)
+				),
+				React.createElement(CurrencyModal, { storage: this.state.storage })
 			);
 		} else {
 			return React.createElement(
@@ -285,7 +307,8 @@ var FormComponent = React.createClass({
 					{ className: 'btn btn-primary btn-sm modal-trigger', href: '#', 'data-toggle': 'modal', 'data-target': '#myModal' },
 					React.createElement('i', { className: 'fa fa-plus' }),
 					' Валюта'
-				)
+				),
+				React.createElement(CurrencyModal, { storage: this.state.storage })
 			);
 		}
 	}
@@ -293,7 +316,7 @@ var FormComponent = React.createClass({
 
 module.exports = FormComponent;
 
-},{"jquery":5,"react":162}],5:[function(require,module,exports){
+},{"./currencyModal.jsx":3,"jquery":5,"react":162}],5:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.2.0
  * http://jquery.com/

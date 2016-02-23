@@ -1,5 +1,6 @@
 var React         = require('react');
-var CurrencyModal = require('./currencyModal.jsx');
+// var CurrencyModal = require('./currencyModal.jsx');
+var FormComponent = require('./form.jsx');
 
 if(typeof(Storage) !== "undefined") {
 	var storage = localStorage.getItem("currencies");
