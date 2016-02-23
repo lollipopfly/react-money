@@ -35,7 +35,7 @@ var FormComponent = React.createClass({
 												<input type="text"/>
 											</td>
 											<td>
-												2123
+												test string
 											</td>
 											<td>
 												<input type="text"/>

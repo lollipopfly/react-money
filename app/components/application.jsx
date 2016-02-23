@@ -1,11 +1,18 @@
 var React         = require('react');
 var CurrencyModal = require('./currencyModal.jsx');
 
+if(typeof(Storage) !== "undefined") {
+	var storage = localStorage.getItem("currencies");
+	if(storage) {
+		storage = JSON.parse(storage);
+	}
+}
+
 var Application = React.createClass({
 	render: function() {
 		return (
 			<div>
-				<CurrencyModal />
+				<CurrencyModal storage={storage} />
 			</div>
 		);
 	}

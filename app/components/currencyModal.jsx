@@ -1,18 +1,10 @@
 var React = require('react');
-var FormComponent = require('./form.jsx'); // ?
-
-if(typeof(Storage) !== "undefined") {
-	var storage = localStorage.getItem("currencies");
-	if(storage) {
-		storage = JSON.parse(storage);
-	}
-}
-
+var FormComponent = require('./form.jsx');
 
 var CurrencyModal = React.createClass({
 	getInitialState: function() {
 		return {
-			storage: storage,
+			storage: this.props.storage,
 			currencies:[
 				{
 					code: "rub",
@@ -28,33 +20,34 @@ var CurrencyModal = React.createClass({
 					code: 'euro',
 					name: 'Евро',
 					className: 'fa-eur'
-				}]
+				}
+			]
 		}
 	},
 
 	addCurrency: function() {
 		if(typeof(Storage) !== "undefined") {
-			var currenciesFromStorage = this.state.storage; // get currencies string from localstorage
+			var storage = this.state.storage; // get currencies string from localstorage
 			var currencySelectObj = JSON.parse(this.refs.currencySelect.value); // selected currency & make obj
 
-			if(currenciesFromStorage) {
+			if(storage) {
 				// Chek the condition if selected currency is entry in localstorage
-				for (var i = 0; i < currenciesFromStorage.length; i++) {
-					if(currenciesFromStorage[i].name === currencySelectObj.name) {
+				for (var i = 0; i < storage.length; i++) {
+					if(storage[i].name === currencySelectObj.name) {
 						alert('Такая валюта уже есть!');
 						return false;
 					}
 				}
 			} else {
 				//  localstorage is empty
-				var currenciesFromStorage = Array();
+				var storage = Array();
 			}
 
 			// Add currency
-			currenciesFromStorage.push(currencySelectObj);
-			this.setState({storage: currenciesFromStorage});
-			currenciesFromStorage = JSON.stringify(currenciesFromStorage);
-			localStorage.setItem('currencies', currenciesFromStorage); // set currencies string to localstorage
+			storage.push(currencySelectObj);
+			this.setState({storage: storage});
+			storage = JSON.stringify(storage);
+			localStorage.setItem('currencies', storage); // set currencies string to localstorage
 			$('#myModal').modal('hide'); // close modal
 		} else {
 			console.log('Sorry locastorage not working in this browser!');
